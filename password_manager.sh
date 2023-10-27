@@ -13,7 +13,9 @@ do
         echo -n "パスワードを入力してください: "
         read Password
         
-        echo $Service_name:$User_name:$Password >> list.txt
+        gpg --yes --passphrase kaxia_nowlearning -o list.txt -d list.txt.gpg 
+        echo $Service_name:$User_name:$Password >> list.txt | gpg -e --yes -r kaxia list.txt
+        rm list.txt
         
         echo "パスワードの追加は成功しました"
         echo -n "次の選択肢から入力してください(Add Password/Get Password/Exit)："
@@ -21,7 +23,7 @@ do
         echo -n "サービス名を入力してください: "
         read Service_name
     
-        Result=$(grep $Service_name list.txt)
+        Result=$(gpg -d --passphrase kaxia_nowlearning list.txt.gpg | grep $Service_name)
         if [ "$Result" = "" ] ; then #list.txtに保存されていない場合
             echo "そのサービス名は保存されていません。"
         else #list.txtにある場合
